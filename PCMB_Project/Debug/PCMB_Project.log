@@ -1,8 +1,0 @@
-﻿  PCMB_Project.cpp
-c:\users\shark\documents\visual studio 2015\projects\02-win32sdk_com_winrt-2018\01-sdk_com_winrt\03-course\00-project\pcmb_project\pcmb_project.cpp(111): warning C4042: 'unnamed-parameter': has bad storage class
-c:\users\shark\documents\visual studio 2015\projects\02-win32sdk_com_winrt-2018\01-sdk_com_winrt\03-course\00-project\pcmb_project\pcmb_project.cpp(151): warning C4101: 'temp2': unreferenced local variable
-c:\users\shark\documents\visual studio 2015\projects\02-win32sdk_com_winrt-2018\01-sdk_com_winrt\03-course\00-project\pcmb_project\pcmb_project.cpp(151): warning C4101: 'temp1': unreferenced local variable
-c:\users\shark\documents\visual studio 2015\projects\02-win32sdk_com_winrt-2018\01-sdk_com_winrt\03-course\00-project\pcmb_project\pcmb_project.cpp(150): warning C4101: 'imyans': unreferenced local variable
-c:\users\shark\documents\visual studio 2015\projects\02-win32sdk_com_winrt-2018\01-sdk_com_winrt\03-course\00-project\pcmb_project\pcmb_project.cpp(305): warning C4042: 'hBitmap': has bad storage class
-  PCMB_Project.vcxproj -> C:\Users\SharK\Documents\Visual Studio 2015\Projects\02-Win32SDK_COM_WinRT-2018\01-SDK_COM_WINRT\03-Course\00-Project\PCMB_Project\Debug\PCMB_Project.exe
-  PCMB_Project.vcxproj -> C:\Users\SharK\Documents\Visual Studio 2015\Projects\02-Win32SDK_COM_WinRT-2018\01-SDK_COM_WINRT\03-Course\00-Project\PCMB_Project\Debug\PCMB_Project.pdb (Full PDB)

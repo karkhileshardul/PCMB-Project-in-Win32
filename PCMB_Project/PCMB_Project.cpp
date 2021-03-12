@@ -1,56 +1,39 @@
 #include"PCMB_Project.h"
-#include"ExplicitServer.h"
-#include<math.h>
-#define PI 3.142
-
-double RefractiveIndex(double n1, double n2, double angle1, double angle2)
-{
-	double result = 0.0;
-	double t_angle1 = 0.0, t_angle2 = 0.0;
-
-	if (n1 == 0.0)
-	{
-		angle1 = angle1 *(PI / 180.0);
-		angle2 = angle2 *(PI / 180.0);
-		t_angle1 = sin(angle1);
-		t_angle2 = sin(angle2);
-		result = (n2* t_angle1) / t_angle2;
-	}
-	else if (n2 == 0.0)
-	{
-		angle1 = angle1 *(PI / 180.0);
-		angle2 = angle2 *(PI / 180.0);
-		t_angle1 = sin(angle1);
-		t_angle2 = sin(angle2);
-		result = (n1*t_angle2) / t_angle1;
-	}
-	else
-	{
-		MessageBox(NULL, L"Unexpected Error", L"ERROR", MB_OK);
-		exit(EXIT_FAILURE);
-	}
-	return (result);
-}
+#include"PCMBCOMOperablity.h"
 
 
-struct physics {
+struct physics0 {
 	TCHAR Str1[50];
 	TCHAR Str2[50];
 	TCHAR Str3[50];
 	TCHAR Str4[50];
 	TCHAR Str5[50];
 };
-struct physics2 {
+struct physics1 {
 	double RefractiveIndex1;
 	double RefractiveIndex2;
-	double theta1;
+	double theta1;					
 	double theta2;
 	double Ans;
 };
 
+struct maths0 {
+	int FirstNumber;
+	int SecondNumber;
+	int AnsGCD;
+};
 
-physics in1;
-physics2 inn1;
+struct maths1 {
+	int FirstNumber;
+	int SecondNumber;
+	long Ans;
+};
+
+
+physics0 physics0_in1;
+physics1 physics1_in1;
+maths0 maths0_in1;
+maths1 maths1_in1;
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int iCmdShow)
 {
 	WNDCLASSEX wndclassex;
@@ -63,8 +46,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 	wndclassex.cbClsExtra = 0;
 	wndclassex.cbWndExtra = 0;
 	wndclassex.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wndclassex.hIcon = LoadIcon(hInstance,L"MYICON");
-	wndclassex.hIconSm = LoadIcon(hInstance,L"MYICON2");
+	wndclassex.hIcon = LoadIcon(hInstance,TEXT("MYICON"));
+	wndclassex.hIconSm = LoadIcon(hInstance,TEXT("MYICON2"));
 	wndclassex.hInstance = hInstance;
 	wndclassex.style = CS_HREDRAW | CS_VREDRAW;
 	wndclassex.lpszMenuName = NULL;
@@ -75,11 +58,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 
 	if (!RegisterClassEx(&wndclassex))
 	{
-		MessageBox(NULL, L"RegisterClassEx() Failed!!!!", L"ERROR_1", MB_OK);
+		MessageBox(NULL, TEXT("RegisterClassEx() Failed!!!!"), TEXT("ERROR_1"), MB_OK);
 		exit(EXIT_FAILURE);
 	}
 
-	hwnd = CreateWindow(szClassName, L"Bitmap window",
+	hwnd = CreateWindow(szClassName, TEXT("Bitmap window"),
 		WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU |
 		WS_THICKFRAME | WS_CLIPSIBLINGS | WS_CLIPCHILDREN,
 		CW_USEDEFAULT,CW_USEDEFAULT,
@@ -88,7 +71,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 
 	if (!(hwnd))
 	{
-		MessageBox(NULL, L"CreateWindow() Failed!!!1", L"ERROR_2", MB_OK);
+		MessageBox(NULL, TEXT("CreateWindow() Failed!!!1"), TEXT("ERROR_2"), MB_OK);
 		exit(EXIT_FAILURE);
 	}
 
@@ -145,8 +128,14 @@ BOOL CALLBACK DlgProc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam)
 	static int number = 0;
 	TCHAR tchar_str[100];
 	typedef double(*RefractiveIndexptr)(double, double, double, double);
-	RefractiveIndexptr pfn = NULL;
+	typedef int(*findgcdptr)(int,int);
+	typedef long(*MultiplicationOfTwoIntegers)(int, int);
+	RefractiveIndexptr RefractiveIndexPtr_pfn0 = NULL;
+	findgcdptr findgcdptr_pfn0 = NULL;
+	MultiplicationOfTwoIntegers multiplyintegersptr_pfn0 = NULL;
 	double danswer;
+	double ianswer;
+	long lanswer;
 	int imyans;
 	double temp1, temp2;
 	switch (iMsg)
@@ -154,93 +143,88 @@ BOOL CALLBACK DlgProc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam)
 		case WM_INITDIALOG:
 			SetFocus(GetDlgItem(hDlg, ID_ET_RI1));
 			SendDlgItemMessage(hDlg, ID_RB_PHYSICS ,BM_SETCHECK, 1, 0);
-			EnableWindow(GetDlgItem(hDlg, ID_ET_FN2), FALSE);
-			EnableWindow(GetDlgItem(hDlg, ID_ET_SN2), FALSE);
-			EnableWindow(GetDlgItem(hDlg, ID_ET_FN3), FALSE);
-			EnableWindow(GetDlgItem(hDlg, ID_ET_SN3), FALSE);
-			EnableWindow(GetDlgItem(hDlg, ID_ET_FN4), FALSE);
-			EnableWindow(GetDlgItem(hDlg, ID_ET_SN4), FALSE);
-			EnableWindow(GetDlgItem(hDlg, ID_ET_ANS2), FALSE);
-			EnableWindow(GetDlgItem(hDlg, ID_ET_ANS3), FALSE);
-			EnableWindow(GetDlgItem(hDlg, ID_ET_ANS4), FALSE);
-			EnableWindow(GetDlgItem(hDlg, ID_PB_CHEMISTRY_SUBMIT), FALSE);
-			EnableWindow(GetDlgItem(hDlg, ID_PB_MATHS_SUBMIT), FALSE);
-			EnableWindow(GetDlgItem(hDlg, ID_PB_BIOLOGY_SUBMIT), FALSE);
 			return(TRUE);
 			break;
 		case WM_COMMAND:
 			switch (LOWORD(wParam))
 			{
 /* PHYSICS ____START____*/
-				case ID_RB_PHYSICS:
+/*				case ID_RB_PHYSICS:
 						SendDlgItemMessage(hDlg, ID_RB_MATHS, BM_SETCHECK, 0, 1);
 						SendDlgItemMessage(hDlg, ID_RB_CHEMISTRY, BM_SETCHECK, 0, 1);
-						SendDlgItemMessage(hDlg, ID_RB_BIOLOGY, BM_SETCHECK, 0, 1);
 					
+
 						SetWindowText(GetDlgItem(hDlg, ID_ET_RI1), TEXT(""));
 						SetWindowText(GetDlgItem(hDlg, ID_ET_RI2), TEXT(""));
 						SetWindowText(GetDlgItem(hDlg, ID_ET_AI), TEXT(""));
 						SetWindowText(GetDlgItem(hDlg, ID_ET_AR), TEXT(""));
 						SetWindowText(GetDlgItem(hDlg, ID_ET_ANS1), TEXT(""));
 
+						/*
 						EnableWindow(GetDlgItem(hDlg, ID_ET_FN2), FALSE);
 						EnableWindow(GetDlgItem(hDlg, ID_ET_SN2), FALSE);
 						EnableWindow(GetDlgItem(hDlg, ID_ET_ANS2), FALSE);
 						EnableWindow(GetDlgItem(hDlg, ID_ET_FN3), FALSE);
 						EnableWindow(GetDlgItem(hDlg, ID_ET_SN3), FALSE);
 						EnableWindow(GetDlgItem(hDlg, ID_ET_ANS3), FALSE);
-						EnableWindow(GetDlgItem(hDlg, ID_ET_FN4), FALSE);
-						EnableWindow(GetDlgItem(hDlg, ID_ET_SN4), FALSE);
-						EnableWindow(GetDlgItem(hDlg, ID_ET_ANS4), FALSE);
 						EnableWindow(GetDlgItem(hDlg, ID_PB_MATHS_SUBMIT), FALSE);
 						EnableWindow(GetDlgItem(hDlg, ID_PB_CHEMISTRY_SUBMIT), FALSE);
-						EnableWindow(GetDlgItem(hDlg, ID_PB_BIOLOGY_SUBMIT), FALSE);
-					break;
+						*/
+/*					break;
 				case ID_ET_RI1:
-					GetDlgItemText(hDlg,ID_ET_RI1,in1.Str1,40);
-					inn1.RefractiveIndex1 = _wtof(in1.Str1);
-					//swprintf_s(in1.Str1, TEXT("%f"), inn1.RefractiveIndex1);
-					//SetDlgItemText(hDlg, ID_ET_ANS1, in1.Str1);
+					GetDlgItemText(hDlg,ID_ET_RI1,physics0_in1.Str1,40);
+					physics1_in1.RefractiveIndex1 = atof(physics0_in1.Str1);
+					//swprintf_s(physics0_in1.Str1, TEXT("%f"), physics1_in1.RefractiveIndex1);
+					//SetDlgItemText(hDlg, ID_ET_ANS1, physics0_in1.Str1);
 					break;
 				case ID_ET_RI2:
-					GetDlgItemText(hDlg, ID_ET_RI2, in1.Str2, 40);
-					inn1.RefractiveIndex2 = _wtof(in1.Str2);
+					GetDlgItemText(hDlg, ID_ET_RI2, physics0_in1.Str2, 40);
+					physics1_in1.RefractiveIndex2 = atof(physics0_in1.Str2);
 					break;
 				case ID_ET_AI:
-					GetDlgItemText(hDlg, ID_ET_AI, in1.Str3, 40);
-					inn1.theta1 = _wtof(in1.Str3);
+					GetDlgItemText(hDlg, ID_ET_AI, physics0_in1.Str3, 40);
+					physics1_in1.theta1 = atof(physics0_in1.Str3);
 					break;
 				case ID_ET_AR:
-					GetDlgItemText(hDlg, ID_ET_AR, in1.Str4, 40);
-					inn1.theta2 = _wtof(in1.Str4);
+					GetDlgItemText(hDlg, ID_ET_AR, physics0_in1.Str4, 40);
+					physics1_in1.theta2 = atof(physics0_in1.Str4);
 					break;
 				case ID_PB_PHYSICS_SUBMIT:
-					hModule = LoadLibrary(L"FirstDynamicLinkLibrary.dll");
+					hModule = LoadLibrary(TEXT("ExplicitServer.dll")); 
 					if (hModule == NULL)
 					{
-						MessageBox(NULL, L"Error in LoadLibrary()", L"ERROR", MB_OK);
+						MessageBox(NULL, TEXT("Error in LoadLibrary()"), TEXT("ERROR"), MB_OK);
 						exit(EXIT_FAILURE);
 					}
 
-					pfn = (RefractiveIndexptr)GetProcAddress(hModule, "RefractiveIndex");
-					if (inn1.RefractiveIndex1 == 0) {
-						danswer = pfn(inn1.RefractiveIndex1, inn1.RefractiveIndex2, inn1.theta1, inn1.theta2);
-						swprintf(tchar_str, 100, L"%f", danswer);
+					RefractiveIndexPtr_pfn0 = (RefractiveIndexptr)GetProcAddress(hModule, "RefractiveIndex");
+					if (physics1_in1.RefractiveIndex1 == 0) {
+						danswer = RefractiveIndexPtr_pfn0(physics1_in1.RefractiveIndex1, physics1_in1.RefractiveIndex2, physics1_in1.theta1, physics1_in1.theta2);
+						sprintf_s(tchar_str,TEXT("%f"), danswer);
+						//wsprintf(tchar_str,TEXT("%f"), danswer);
+						//swprintf(tchar_str, 100, TEXT("%f"), danswer);
 					}
-					else if (inn1.RefractiveIndex2 == 0)
+					else if (physics1_in1.RefractiveIndex2 == 0)
 					{
-						danswer = pfn(inn1.RefractiveIndex1, inn1.RefractiveIndex2,inn1.theta1, inn1.theta2);
-						swprintf(tchar_str, 100, L"%f", danswer);
+						danswer = RefractiveIndexPtr_pfn0(physics1_in1.RefractiveIndex1, physics1_in1.RefractiveIndex2,physics1_in1.theta1, physics1_in1.theta2);
+						sprintf_s(tchar_str,TEXT("%f"), danswer);
+						//swprintf(tchar_str, 100, TEXT("%f"), danswer);
+						//wsprintf(tchar_str,TEXT("%f"), danswer);
 					}
 					SetDlgItemText(hDlg, ID_ET_ANS1, tchar_str);
 					FreeLibrary(hModule);
+					EnableWindow(GetDlgItem(hDlg, ID_ET_RI1), FALSE);
+					EnableWindow(GetDlgItem(hDlg, ID_ET_RI2), FALSE);
+					EnableWindow(GetDlgItem(hDlg, ID_ET_AI), FALSE);
+					EnableWindow(GetDlgItem(hDlg, ID_ET_AR), FALSE);					
+					EnableWindow(GetDlgItem(hDlg, ID_ET_ANS1), FALSE);
+					EnableWindow(GetDlgItem(hDlg, ID_PB_PHYSICS_SUBMIT), FALSE);
 					break;
 /* PHYSICS ____END____*/
 /* MATHEMATICS ____START____*/
-				case ID_RB_MATHS:
+/*				case ID_RB_MATHS:
 						SendDlgItemMessage(hDlg, ID_RB_PHYSICS, BM_SETCHECK, 0, 1);
 						SendDlgItemMessage(hDlg, ID_RB_CHEMISTRY, BM_SETCHECK, 0, 1);
-						SendDlgItemMessage(hDlg, ID_RB_BIOLOGY, BM_SETCHECK, 0, 1);
 						SendDlgItemMessage(hDlg, ID_RB_MATHS, BM_SETCHECK, 1, 0);
 						
 						SetWindowText(GetDlgItem(hDlg, ID_ET_RI1), TEXT(""));
@@ -250,48 +234,103 @@ BOOL CALLBACK DlgProc(HWND hDlg, UINT iMsg, WPARAM wParam, LPARAM lParam)
 						SetWindowText(GetDlgItem(hDlg, ID_ET_ANS1), TEXT(""));
 					break;
 				case ID_ET_FN2:
+					maths0_in1.FirstNumber=GetDlgItemInt(hDlg, ID_ET_FN2, NULL,TRUE);
+					//(hDlg, ID_ET_RI1, physics0_in1.Str1, 40);
 					break;
 				case ID_ET_SN2:
-					break;
-				case ID_ET_ANS2:
+					maths0_in1.SecondNumber = GetDlgItemInt(hDlg, ID_ET_FN2, NULL, TRUE);
 					break;
 				case ID_PB_MATHS_SUBMIT:
+					hModule = LoadLibrary(TEXT("ExplicitServer.dll"));
+					if (hModule == NULL)
+					{
+						MessageBox(NULL, TEXT("Error in LoadLibrary()"), TEXT("ERROR"), MB_OK);
+						exit(EXIT_FAILURE);
+					}
+					findgcdptr_pfn0 = (findgcdptr)GetProcAddress(hModule, "findgcd");
+					ianswer = findgcdptr_pfn0(maths0_in1.FirstNumber, maths0_in1.SecondNumber);
+					SetDlgItemInt(hDlg, ID_ET_ANS2, ianswer, TRUE);
+					FreeLibrary(hModule);
+					EnableWindow(GetDlgItem(hDlg, ID_ET_FN2), FALSE);
+					EnableWindow(GetDlgItem(hDlg, ID_ET_SN2), FALSE);
+					EnableWindow(GetDlgItem(hDlg, ID_ET_ANS2), FALSE);
+					EnableWindow(GetDlgItem(hDlg, ID_PB_MATHS_SUBMIT), FALSE);
 					break;
 /* MATHEMATICS ____END____*/
 /* CHEMISTRY ____START____*/
 				case ID_RB_CHEMISTRY:
 						SendDlgItemMessage(hDlg, ID_RB_PHYSICS, BM_SETCHECK, 0, 1);
-						SendDlgItemMessage(hDlg, ID_RB_BIOLOGY, BM_SETCHECK, 0, 1);
 						SendDlgItemMessage(hDlg, ID_RB_MATHS, BM_SETCHECK, 0, 0);
 						SendDlgItemMessage(hDlg, ID_RB_CHEMISTRY, BM_SETCHECK, 1, 1);
-					break;
-				case ID_GB_CHEMISTRY:
-					break;
+						SetWindowText(GetDlgItem(hDlg, ID_ET_FN3), TEXT(""));
+						SetWindowText(GetDlgItem(hDlg, ID_ET_SN3), TEXT(""));
+						SetWindowText(GetDlgItem(hDlg, ID_ET_ANS3), TEXT(""));
+						break;
 				case ID_ET_FN3:
+					maths1_in1.FirstNumber = GetDlgItemInt(hDlg, ID_ET_FN3, NULL, TRUE);					
 					break;
 				case ID_ET_SN3:
-					break;
-				case ID_ET_ANS3:
+					maths1_in1.SecondNumber = GetDlgItemInt(hDlg, ID_ET_SN3, NULL, TRUE);
 					break;
 				case ID_PB_CHEMISTRY_SUBMIT:
+					hModule = LoadLibrary(TEXT("PCMBCOMOperablity.dll"));
+					if (hModule == NULL)
+					{
+						MessageBox(NULL, TEXT("Error in LoadLibrary()"), TEXT("ERROR"), MB_OK);
+						exit(EXIT_FAILURE);
+					}
+					multiplyintegersptr_pfn0 = (MultiplicationOfTwoIntegers)GetProcAddress(hModule, "MultiplicationOfTwoIntegers");
+					if (multiplyintegersptr_pfn0 == NULL) 
+					{
+						MessageBox(NULL, TEXT("Error in GetProcAddress()!!!"), TEXT("ERROR"), MB_OK);
+						exit(EXIT_FAILURE);
+					}
+
+					lanswer = multiplyintegersptr_pfn0(maths1_in1.FirstNumber, maths1_in1.SecondNumber);
+					SetDlgItemInt(hDlg, ID_ET_ANS3, lanswer, TRUE);
+					FreeLibrary(hModule);
+					EnableWindow(GetDlgItem(hDlg, ID_ET_FN3), FALSE);
+					EnableWindow(GetDlgItem(hDlg, ID_ET_SN3), FALSE);
+					EnableWindow(GetDlgItem(hDlg, ID_ET_ANS3), FALSE);
+					EnableWindow(GetDlgItem(hDlg, ID_PB_CHEMISTRY_SUBMIT), FALSE);
 					break;
 /* CHEMISTRY ____END____*/
-/* BIOLOGY ____START____*/
-				case ID_RB_BIOLOGY:
-						SendDlgItemMessage(hDlg, ID_RB_PHYSICS, BM_SETCHECK, 0, 1);
-						SendDlgItemMessage(hDlg, ID_RB_MATHS, BM_SETCHECK, 0, 0);
-						SendDlgItemMessage(hDlg, ID_RB_CHEMISTRY, BM_SETCHECK, 0, 1);
-						SendDlgItemMessage(hDlg, ID_RB_BIOLOGY, BM_SETCHECK, 1, 1);
+/*				case ID_PB_MODIFY:
+						
+						EnableWindow(GetDlgItem(hDlg, ID_ET_RI1), TRUE);
+						EnableWindow(GetDlgItem(hDlg, ID_ET_RI2), TRUE);
+						EnableWindow(GetDlgItem(hDlg, ID_ET_AI), TRUE);
+						EnableWindow(GetDlgItem(hDlg, ID_ET_AR), TRUE);					
+						EnableWindow(GetDlgItem(hDlg, ID_ET_ANS1), TRUE);
+						EnableWindow(GetDlgItem(hDlg, ID_PB_PHYSICS_SUBMIT), TRUE);
+					
+
+						SetWindowText(GetDlgItem(hDlg, ID_ET_RI1), TEXT(""));
+						SetWindowText(GetDlgItem(hDlg, ID_ET_RI2), TEXT(""));
+						SetWindowText(GetDlgItem(hDlg, ID_ET_AI), TEXT(""));
+						SetWindowText(GetDlgItem(hDlg, ID_ET_AR), TEXT(""));
+						SetWindowText(GetDlgItem(hDlg, ID_ET_ANS1), TEXT(""));
+
+						EnableWindow(GetDlgItem(hDlg, ID_ET_FN2), TRUE);
+						EnableWindow(GetDlgItem(hDlg, ID_ET_SN2), TRUE);
+						EnableWindow(GetDlgItem(hDlg, ID_ET_ANS2), TRUE);
+						EnableWindow(GetDlgItem(hDlg, ID_PB_MATHS_SUBMIT), TRUE);
+
+						SetWindowText(GetDlgItem(hDlg, ID_ET_FN2), TEXT(""));
+						SetWindowText(GetDlgItem(hDlg, ID_ET_SN2), TEXT(""));
+						SetWindowText(GetDlgItem(hDlg, ID_ET_ANS2), TEXT(""));
+						
+
+						EnableWindow(GetDlgItem(hDlg, ID_ET_FN3), TRUE);
+						EnableWindow(GetDlgItem(hDlg, ID_ET_SN3), TRUE);
+						EnableWindow(GetDlgItem(hDlg, ID_ET_ANS3), TRUE);
+						EnableWindow(GetDlgItem(hDlg, ID_PB_CHEMISTRY_SUBMIT), TRUE);
+
+						SetWindowText(GetDlgItem(hDlg, ID_ET_FN3), TEXT(""));
+						SetWindowText(GetDlgItem(hDlg, ID_ET_SN3), TEXT(""));
+						SetWindowText(GetDlgItem(hDlg, ID_ET_ANS3), TEXT(""));
+*/						
 					break;
-				case ID_ET_FN4:
-					break;
-				case ID_ET_SN4:
-					break;
-				case ID_ET_ANS4:
-					break;
-				case ID_PB_BIOLOGY_SUBMIT:
-					break;
-/* BIOLOGY ____END____*/
 				case ID_PB_BACK://COMMON
 					EndDialog(hDlg, 0);
 					break;
@@ -328,10 +367,31 @@ void BitmapAndFont(HWND hwnd,static HBITMAP hBitmap)
 
 			SetTextColor(myhdc_0, RGB(24, 24, 24));
 			SelectObject(myhdc_0, hFont);
-			TextOut(myhdc_0,rect.left,rect.top, L"     Press Space Bar to Continue", 
-					wcslen(L"     Press Space Bar to Continue"));
+			TextOut(myhdc_0,rect.left,rect.top,TEXT("     Press Space Bar to Continue"),32);
 		DeleteObject(hFont);
 		DeleteDC(myhdc_1);
 	EndPaint(hwnd, &ps);
 }
 
+
+void ComErrorDescriptionString(HWND hwnd,HRESULT hr)
+{
+	TCHAR* szErrorMessage=NULL;
+	TCHAR str[255];
+
+	if(FACILITY_WINDOWS==HRESULT_FACILITY(hr))
+	{
+		hr=HRESULT_CODE(hr);
+	}
+
+	if(FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |  FORMAT_MESSAGE_FROM_SYSTEM,NULL,hr,MAKELANGID(LANG_NEUTRAL,SUBLANG_DEFAULT),(LPTSTR)&szErrorMessage,0,NULL)!=0)
+	{
+		//sprintf(str,TEXT("%s"),szErrorMessage);
+		LocalFree(szErrorMessage);
+	}
+	else
+	{
+		//sprintf(str,TEXT("[Could not find a description for error # %#x.]\n"),hr);
+	}
+	MessageBox(hwnd,str,TEXT("COM Error"),MB_OK);
+}

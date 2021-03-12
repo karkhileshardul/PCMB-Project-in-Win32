@@ -1,9 +1,18 @@
 #include<stdio.h>
 #include<Windows.h>
 
+
 #define MYBITMAP_0	501
 #define WIN_WIDTH	800
 #define WIN_HEIGHT	600
+
+#pragma comment(lib,"user32.lib")
+#pragma comment(lib,"kernel32.lib")
+#pragma comment(lib,"gdi32.lib")
+#pragma comment(lib,"ole32.lib")
+#pragma comment(lib,"oleaut32.lib")
+#pragma comment(lib,"advapi32.lib")
+
 
 //dialog box related 
 
@@ -29,13 +38,6 @@
 #define ID_ET_SN3				124
 #define ID_ET_ANS3				125
 #define ID_PB_CHEMISTRY_SUBMIT	126
-
-#define	ID_RB_BIOLOGY			131
-#define ID_GB_BIOLOGY			132
-#define ID_ET_FN4				133
-#define ID_ET_SN4				134
-#define ID_ET_ANS4				135
-#define ID_PB_BIOLOGY_SUBMIT	136
 
 #define ID_PB_MODIFY	160
 #define ID_PB_BACK		150

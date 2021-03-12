@@ -1,0 +1,71 @@
+﻿// Created by Microsoft (R) C/C++ Compiler Version 14.16.27024.1 (6c5d9755).
+//
+// c:\users\rushikesh.nandedkar\documents\myvisualstudio2017projects\01-win32\pcmbcomoperablity\pcmbdotnet\math.tlh
+//
+// C++ source equivalent of Win32 type library Math.tlb
+// compiler-generated file created 12/26/18 at 17:55:54 - DO NOT EDIT!
+
+#pragma once
+#pragma pack(push, 8)
+
+#include <comdef.h>
+
+//
+// Forward references and typedefs
+//
+
+struct __declspec(uuid("ca86e018-57e1-36c7-a658-d57c763dd690"))
+/* LIBID */ __Math;
+struct __declspec(uuid("68190f3e-0c6e-3fcc-a592-df3651156971"))
+/* dual interface */ IMath;
+struct /* coclass */ Math;
+struct __declspec(uuid("2809c61a-4dcc-3bde-ae9c-2129764f921d"))
+/* dual interface */ _Math;
+
+//
+// Smart pointer typedef declarations
+//
+
+_COM_SMARTPTR_TYPEDEF(IMath, __uuidof(IMath));
+_COM_SMARTPTR_TYPEDEF(_Math, __uuidof(_Math));
+
+//
+// Type library items
+//
+
+struct __declspec(uuid("68190f3e-0c6e-3fcc-a592-df3651156971"))
+IMath : IDispatch
+{
+    //
+    // Raw methods provided by interface
+    //
+
+      virtual HRESULT __stdcall get_MultiplicationValue (
+        /*[out,retval]*/ long * pRetVal ) = 0;
+      virtual HRESULT __stdcall put_MultiplicationValue (
+        /*[in]*/ long pRetVal ) = 0;
+      virtual HRESULT __stdcall get_DivisionValue (
+        /*[out,retval]*/ long * pRetVal ) = 0;
+      virtual HRESULT __stdcall put_DivisionValue (
+        /*[in]*/ long pRetVal ) = 0;
+      virtual HRESULT __stdcall MultiplicationOfTwoIntegers (
+        /*[in]*/ long num1,
+        /*[in]*/ long num2,
+        /*[out,retval]*/ long * pRetVal ) = 0;
+      virtual HRESULT __stdcall DivisionOfTwoIntegers (
+        /*[in]*/ long num1,
+        /*[in]*/ long num2,
+        /*[out,retval]*/ long * pRetVal ) = 0;
+};
+
+struct __declspec(uuid("0bd4545c-fdf5-323f-9dcb-54898cc59773"))
+Math;
+    // [ default ] interface _Math
+    // interface _Object
+    // interface IMath
+
+struct __declspec(uuid("2809c61a-4dcc-3bde-ae9c-2129764f921d"))
+_Math : IDispatch
+{};
+
+#pragma pack(pop)
